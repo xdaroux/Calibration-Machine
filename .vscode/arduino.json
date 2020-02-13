@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "Calibration\\Calibration.ino",
+    "sketch": "Programmation\\Calibration.ino",
     "port": "COM3"
 }
