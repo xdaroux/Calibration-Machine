@@ -1,0 +1,24 @@
+# Information sur les acceleromètres
+
+Lien : 
+https://www.analog.com/en/products/landing-pages/001/accelerometer-specifications-definitions.html#
+
+
+BANDWIDTH, 
+    Finalement c'est la fréquence mecanique maximal que le senseur peux se faire brasser d'un bord a l'autre !!!
+
+OUTPUT DATA RATE (ODR),
+    C'est a quelle vitesse on peux aller lire la valeur.
+     En analog, il ne semble pas avoir de limite de vitesse !!! (limitation de ADC interne au microcontroleur)
+
+Source : https://community.st.com/s/question/0D50X0000BsO8HdSQK/bandwidth-vs-odr
+
+
+
+
+Application Mr.DriveShaft
+    RPM max : 3000 RPM
+    RPM min : ? RPM
+
+    Frequence d'oscillation max : 50Hz        (3000 roation/min * 1/60 min/sec) = 50 roation/Secondes = 50 Hz
+    Bandwidth(BD) : 50Hz 
