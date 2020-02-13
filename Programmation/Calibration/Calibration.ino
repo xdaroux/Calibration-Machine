@@ -16,6 +16,9 @@ unsigned long timerSwitch = millis();
 
 #define pinSwitch 13
 
+uint8_t numberAcc = 4;    // va falloir que je fasse varier se chiffre en  fonction des input output 
+uint8_t testAccNum = 0;   // Savoir qu'elle accelerometre on test
+
 void setup()
 {
   Serial.begin(9600);
@@ -65,12 +68,13 @@ void loop()
 
     break;
   case TEST:
-    Serial.println("TEST");
+  {
+    int i = 0;
+    //Serial.println("TEST");
     // calibraion.angleMoyenTest[calibration.numerosTest] = test(); // faire le test s'incroniser ! avec la rotation
     while (CALIBRATION.etat != CALCUL_INTERMEDIAIRE)
     {
-      int i = 0;
-      
+
       while (flagTest == 1 && i < DIMENSION)
       {
 
@@ -84,17 +88,17 @@ void loop()
         }
       }
     }
-
-    break;
+  }
+  break;
 
   case CALCUL_INTERMEDIAIRE:
+  {
     Serial.println("CALCUL_INTERMEDIAIRE");
     int i;
-    Serial.println(i);
     //calcul du peak
     Serial.print("RPM : ");
     Serial.println(RPM.leRpm);
-    Serial.print(" TIME entre Mesure : ");
+    Serial.print("TIME entre Mesure : ");
     Serial.println(timeEntreMesure);
     Serial.println("================");
 
@@ -109,11 +113,11 @@ void loop()
     }
     Serial.println("================");
     CALIBRATION.etat = CALCUL;
-    break;
+  }
+  break;
   case CALCUL:
     Serial.println("CALCUL");
     CALIBRATION.etat = INIT;
-    Serial.print("-----------");
     break;
   case AFFICHER:
     Serial.println("AFFICHER");

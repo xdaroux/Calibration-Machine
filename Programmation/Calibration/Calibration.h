@@ -33,12 +33,12 @@ typedef struct
   int numerosTest;
 
 } T_calibration;
-
 /*===============================GLOBAL Variable====================================*/
 
 T_calibration CALIBRATION;
 T_RPM RPM;
 T_ACC ACC[DIMENSION];
+uint16_t rawAcc[DIMENSION];
 
 /*====================================Declaration====================================*/
 void Calibration_init(T_calibration *calib);
