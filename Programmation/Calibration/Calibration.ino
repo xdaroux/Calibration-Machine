@@ -70,8 +70,7 @@ void loop()
     while (CALIBRATION.etat != CALCUL_INTERMEDIAIRE)
     {
       int i = 0;
-
-      //timerStopInterupt = micros();
+      
       while (flagTest == 1 && i < DIMENSION)
       {
 

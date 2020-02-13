@@ -15,9 +15,9 @@
 
 typedef struct
 {
-  unsigned int rawAcc;
+  uint16_t rawAcc;
   float gAcc;
-  int count;
+  uint8_t count;
 } T_ACC;
 
 /*Declaration des fonctions ===================================================*/
