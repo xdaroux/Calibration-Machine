@@ -34,7 +34,6 @@ void setup() {
 }
 
 void loop() {
-  
   //RPM calcul 
   RPM_main(&RPM); // TJRS le faire, car utile pour tout le reste
   //calibration 
