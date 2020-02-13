@@ -1,6 +1,0 @@
-
-
-
-
-
-#include "ACCELEROMETRE.h"

@@ -45,7 +45,7 @@ typedef struct
 /*====================================Declaration====================================*/
 void ACC_init(T_ACC*);
 void ACC_init_tableau(T_ACC*,int dimension);
-void ACC_convertRawToG(T_ACC*);
+void ACC_convertRawToG(T_ACC* acc, float zero_ref, float echelle);
 void ACC_read(T_ACC* acc, int analogPin, int count);
 void ACC_afficher(T_ACC*acc);
 
