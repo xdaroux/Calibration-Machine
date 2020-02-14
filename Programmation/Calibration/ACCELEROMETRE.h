@@ -33,7 +33,8 @@ typedef struct
   int count;
 } T_ACC;
 
-/*Declaration des fonctions ===================================================*/
+/*Declaration des fonctions Public==============================================*/
+void Acc_config(void);
 void ACC_init(T_ACC *);
 void ACC_init_tableau(T_ACC *, int dimension);
 void ACC_convertRawToG(T_ACC *acc, float zero_ref, float echelle);

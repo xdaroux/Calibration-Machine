@@ -1,9 +1,8 @@
 #pragma once
 /*Include =====================================================================*/
-
 #include <Arduino.h>
 /*Pin Define  =================================================================*/
-#define RPMpin 2
+#define pinRPM 2 //pin digital 2 Arduino input
 
 /*Define  ====================================DEFINE===========================*/
 /*----------------RPM.ETAT----------------*/
@@ -26,18 +25,19 @@ enum
 
 typedef struct
 {
-  unsigned int leRpm;       //RPM actuelle
-  unsigned int rpm[NB_RPM]; //enregistre
+  uint16_t leRpm;       //RPM actuelle
+  uint16_t rpm[NB_RPM]; //enregistre
 
-  unsigned int nbRotation; //Pour l'interup
+  uint32_t nbRotation; //Pour l'interup
 
-  int etat; //ZERO,AUGMENTE,STABLE,DIMINUE
+  uint8_t etat; //ZERO,AUGMENTE,STABLE,DIMINUE
 
-  unsigned long timerOld;
+  uint32_t timerOld;
 
 } T_RPM;
 
 /*====================================Declaration===================================*/
+void Rpm_config(void);
 void RPM_init(T_RPM *);
 void RPM_calcul(T_RPM *);
 void RPM_enregistre(T_RPM *);

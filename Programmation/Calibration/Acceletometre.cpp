@@ -1,14 +1,10 @@
-
 #include "Accelerometre.h"
-
-
-
-
+/*Declarations des fonctions Private============================================*/
 
 
 /*Definition des fonctions  ===================================================*/
 //config
-void Acc_config()
+void Acc_config(void)
 {
   
 }

@@ -1,7 +1,12 @@
 #pragma once
+
+/*Include======================================================================*/
+
+#include <Arduino.h>
 #include "Rpm.h"
 #include "Accelerometre.h"
-/*====================================DEFINE====================================*/
+
+/*Define=======================================================================*/
 
 //etat
 enum
@@ -19,7 +24,7 @@ enum
 #define NB_TEST 10
 
 //acc
-#define DIMENSION 100 // sois la dimension du tableau pour le nb de lecture dansune rotation du systeme
+#define DIMENSION 100 // sois la dimension du tableau pour le nb de lecture dans une rotation du systeme
 
 /*====================================TYPEDEF====================================*/
 typedef struct

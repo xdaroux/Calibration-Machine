@@ -22,8 +22,9 @@ int8_t pinAccConnected[NOMBRE_ACC_MAX];        // Etat des pin detection acceler
 void setup()
 {
   Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(RPMpin), blink, RISING);
-  //rpm
+  attachInterrupt(digitalPinToInterrupt(pinRPM), blink, RISING);
+  //Rpm
+  Rpm_config();
   RPM_init(&Rpm);
 
   pinMode(pinSwitch, INPUT_PULLUP);

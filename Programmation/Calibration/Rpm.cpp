@@ -2,11 +2,15 @@
 
 
 /*Definition des fonctions  ===================================================*/
+void Rpm_config(void)
+{
+  /* Set up RPM*/
+  pinMode(pinRPM, INPUT_PULLUP);
+}
 //init
 void RPM_init(T_RPM *rpm)
 {
-  /* Set up RPM*/
-  pinMode(RPMpin, INPUT_PULLUP);
+ 
   //la partie qui suit commenter dois etre dans le set up du main setup
   //attachInterrupt(digitalPinToInterrupt(RPMpin), blink, RISING); // Can use HIGHT,LOW,CHANGE,RISING,FALLING
   /*FIN set up RPM*/
