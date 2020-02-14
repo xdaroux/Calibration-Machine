@@ -1,0 +1,14 @@
+1. Ajouiter des switch pour selectionne le nombre acc a teste 
+2. Utiliser Arduino MEGA 
+
+
+Nombre de pin utiliser : 
+    - 2 x 7 segment  avec decodeur/multiplexeur 7 segment entre 0 et 15 : 
+        - 4 pin ) * 5 = 20 pin 
+    -   5 swicht de sélection ACC ON ou off et maybe qui passe par le connecteur approprier, //car des fois on veux pas tester tout les senseurs 
+        - 5 pin
+    -   1 bouton test 
+        - 1 pin
+    -   5 Accelerometre 
+        - 5 pin ANALOG
+        

@@ -1,7 +1,7 @@
 
 
 #include "Calibration.h"
-#define DEBUG 1
+#define DEBUG 0
 // un calibration comporte juste un accelerometre donc on fait un tableau de calibration si on a 3 calibration a faire [3];
 //je vais m'arranger pour que sa le detecte au debut lors de l'alimentation quick connecte qui short une pin pour detecter !
 //et mettre le bon nombre dans lel tableau en foction de sa !
@@ -20,7 +20,7 @@ unsigned long timerSwitch = millis();
 uint8_t numberAccConnected = 0; //Nombre d'accelerometre connecter
 uint8_t testAccNum = 0;         // Savoir qu'elle accelerometre on test
 
-int16_t pinAnalogReadSequence[NOMBRE_ACC_MAX]; // faut je les mettre tous a -1 si non
+uint8_t pinAnalogReadSequence[NOMBRE_ACC_MAX]; // faut je les mettre tous a -1 si non
 int8_t pinAccConnected[NOMBRE_ACC_MAX];        // Etat des pin detection accelerometre peut oprimiser avec de bit faut init a 0
 void setup()
 {
@@ -60,15 +60,17 @@ void setup()
 
 void loop()
 {
-  //RPM calcul
+  //Variable
   int8_t tmp = 0;
-  RPM_main(&RPM); // TJRS le faire, car utile pour tout le reste
-  //calibration
+  int8_t i = 0;
 
-  //Serial.println(CALIBRATION.etat);
+  //Calcul RPM
+  RPM_main(&RPM); 
+
 
   switch (CALIBRATION.etat)
   {
+  /*INIT  =====================================================================*/
   case INIT:
     if (DEBUG)
     {
@@ -205,15 +207,24 @@ void loop()
         pinAnalogReadSequence[numberAccConnected] = -1;
         pinAccConnected[ACC_4] = HIGH;
       }
-      Serial.print("Number ACC Connected : ");
-      Serial.println(numberAccConnected);
+      if (DEBUG)
+      {
+        Serial.print("Number ACC Connected : ");
+        Serial.println(numberAccConnected);
+
+        for (i = 0; i < NOMBRE_ACC_MAX; i++)
+        {
+          Serial.print("Valeur dans sequence de pin :");
+          Serial.println(pinAnalogReadSequence[i]);
+        }
+      }
       tmp = 0;
     } // fin mapping
 
     //Gestion du bouton test
     if (millis() - timerSwitch > 250)
     {
-      if (RPM.leRpm > 500)
+      if (RPM.leRpm > RPM_MIN)
       {
         if (digitalRead(pinSwitch) == 0)
         {
@@ -223,6 +234,7 @@ void loop()
       }
     }
     break;
+  /*START =====================================================================*/  
   case START:
     Serial.println("START");
 
@@ -236,7 +248,7 @@ void loop()
     break;
   case TEST:
   {
-    int i = 0;
+    i = 0;
     //Serial.println("TEST");
     // calibraion.angleMoyenTest[calibration.numerosTest] = test(); // faire le test s'incroniser ! avec la rotation
     while (CALIBRATION.etat != CALCUL_INTERMEDIAIRE)
@@ -261,7 +273,7 @@ void loop()
   case CALCUL_INTERMEDIAIRE:
   {
     Serial.println("CALCUL_INTERMEDIAIRE");
-    int i;
+    i = 0;
     //calcul du peak
     Serial.print("RPM : ");
     Serial.println(RPM.leRpm);
