@@ -5,18 +5,15 @@
 // un calibration comporte juste un accelerometre donc on fait un tableau de calibration si on a 3 calibration a faire [3];
 //je vais m'arranger pour que sa le detecte au debut lors de l'alimentation quick connecte qui short une pin pour detecter !
 //et mettre le bon nombre dans lel tableau en foction de sa !
-volatile unsigned int flagTest = 0;
-unsigned long timerOlderMicros = micros();
-unsigned long timer[DIMENSION];
-double timeEntreMesure;
-unsigned long timerStartInterupt;
-unsigned long timerStopInterupt;
+volatile uint8_t FlagTest = 0;
+uint32_t timerOlderMicros = micros();
 
 unsigned long timerSwitch = millis();
 
 #define pinSwitch 13
 #define NOMBRE_ACC_MAX 5
 
+double timeEntreMesure;         //Temps entre chaque lecture analog rn fonction du Rpm
 uint8_t numberAccConnected = 0; //Nombre d'accelerometre connecter
 uint8_t testAccNum = 0;         // Savoir qu'elle accelerometre on test
 
@@ -27,7 +24,7 @@ void setup()
   Serial.begin(9600);
   attachInterrupt(digitalPinToInterrupt(RPMpin), blink, RISING);
   //rpm
-  RPM_init(&RPM);
+  RPM_init(&Rpm);
 
   pinMode(pinSwitch, INPUT_PULLUP);
 
@@ -38,7 +35,7 @@ void setup()
   pinMode(pin_ACC_4_CONNECTED, INPUT_PULLUP);
 
   //calibration
-  Calibration_init(&CALIBRATION);
+  Calibration_init(&Calibration);
 
   //acceleration
   analogReference(EXTERNAL); // IMPORTANT 3.3V por cet accelerometre
@@ -65,10 +62,9 @@ void loop()
   int8_t i = 0;
 
   //Calcul RPM
-  RPM_main(&RPM); 
+  RPM_main(&Rpm);
 
-
-  switch (CALIBRATION.etat)
+  switch (Calibration.etat)
   {
   /*INIT  =====================================================================*/
   case INIT:
@@ -224,17 +220,17 @@ void loop()
     //Gestion du bouton test
     if (millis() - timerSwitch > 250)
     {
-      if (RPM.leRpm > RPM_MIN)
+      if (Rpm.leRpm > RPM_MIN)
       {
         if (digitalRead(pinSwitch) == 0)
         {
-          CALIBRATION.etat = START;
+          Calibration.etat = START;
           timerSwitch = millis();
         }
       }
     }
     break;
-  /*START =====================================================================*/  
+  /*START =====================================================================*/
   case START:
     Serial.println("START");
 
@@ -242,8 +238,8 @@ void loop()
     // je veux faire au minimum dix test par capteur ! donc sa va alterner entre STABLE et TEST 10 fois accumuler les moyennes !
     // calcul pour 2 degree itteration
 
-    timeEntreMesure = (double)(((1 / ((double)RPM.leRpm / 60)) / DIMENSION) * 1000000); // 60 conversiont RPM par RPS, 1 passer de HZ e Periode, DIMENSION nb de test sur 360 degree
-    CALIBRATION.etat = TEST;
+    timeEntreMesure = (double)(((1 / ((double)Rpm.leRpm / 60)) / DIMENSION) * 1000000); // 60 conversiont RPM par RPS, 1 passer de HZ e Periode, DIMENSION nb de test sur 360 degree
+    Calibration.etat = TEST;
 
     break;
   case TEST:
@@ -251,10 +247,10 @@ void loop()
     i = 0;
     //Serial.println("TEST");
     // calibraion.angleMoyenTest[calibration.numerosTest] = test(); // faire le test s'incroniser ! avec la rotation
-    while (CALIBRATION.etat != CALCUL_INTERMEDIAIRE)
+    while (Calibration.etat != CALCUL_INTERMEDIAIRE)
     {
 
-      while (flagTest == 1 && i < DIMENSION)
+      while (FlagTest == 1 && i < DIMENSION)
       {
 
         if (micros() - timerOlderMicros > timeEntreMesure)
@@ -262,7 +258,6 @@ void loop()
 
           timerOlderMicros = micros();
           ACC_read(&ACC[i], ACC_0, i);
-          //timer[i] = timerOlderMicros;
           i++;
         }
       }
@@ -276,7 +271,7 @@ void loop()
     i = 0;
     //calcul du peak
     Serial.print("RPM : ");
-    Serial.println(RPM.leRpm);
+    Serial.println(Rpm.leRpm);
     Serial.print("TIME entre Mesure : ");
     Serial.println(timeEntreMesure);
     Serial.println("================");
@@ -285,19 +280,15 @@ void loop()
     {
       ACC_convertRawToG(&ACC[i], 520, 107);
       Serial.println(ACC[i].gAcc);
-      // ACC_afficher(&ACC[i]);
-      //timer[i+1] = timer[i+1] - timer[0];
-      // Serial.print("\t");
-      //Serial.print(timer[i]);
     }
     Serial.println("================");
-    CALIBRATION.etat = CALCUL;
+    Calibration.etat = CALCUL;
   }
   break;
   case CALCUL: // calcul de la moyenne
     Serial.println("CALCUL");
     testAccNum++; //Passer a la prochaine pin
-    CALIBRATION.etat = INIT;
+    Calibration.etat = INIT;
     break;
   case AFFICHER:
     Serial.println("AFFICHER");
@@ -315,22 +306,20 @@ void loop()
 void blink()
 {
 
-  RPM.nbRotation++;
+  Rpm.nbRotation++;
 
-  if (CALIBRATION.etat == TEST)
+  if (Calibration.etat == TEST)
   {
-    if (flagTest == 0)
+    if (FlagTest == 0)
     {
-      // timerStartInterupt = micros();
-      flagTest++;
+      FlagTest++;
     }
     else
     {
-
-      flagTest--;
-      CALIBRATION.etat = CALCUL_INTERMEDIAIRE;
+      FlagTest--;
+      Calibration.etat = CALCUL_INTERMEDIAIRE;
     }
   }
 }
 
-//J'ai ajouter se commentaire pour fin de test avec mon laptop voir comment pull sur mon ordi !!!! 
+

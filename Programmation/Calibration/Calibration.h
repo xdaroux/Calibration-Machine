@@ -1,6 +1,6 @@
 #pragma once
-#include "RPM.h"
-#include "ACCELEROMETRE.h"
+#include "Rpm.h"
+#include "Accelerometre.h"
 /*====================================DEFINE====================================*/
 
 //etat
@@ -13,7 +13,7 @@ enum
   CALCUL_INTERMEDIAIRE,
   CALCUL,
   AFFICHER
-};
+}State;
 //fin etat
 
 #define NB_TEST 10
@@ -35,10 +35,13 @@ typedef struct
 } T_calibration;
 /*===============================GLOBAL Variable====================================*/
 
-T_calibration CALIBRATION;
-T_RPM RPM;
+T_calibration Calibration;
+T_RPM Rpm;
 T_ACC ACC[DIMENSION];
-uint16_t rawAcc[DIMENSION];
+T_ACC AccMax;
+T_ACC AccMin;
+uint16_t RawAcc[DIMENSION];
+
 
 /*====================================Declaration====================================*/
 void Calibration_init(T_calibration *calib);

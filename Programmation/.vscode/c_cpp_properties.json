@@ -14,7 +14,8 @@
                 "C:\\Program Files (x86)\\Arduino\\hardware\\tools\\**",
                 "C:\\Program Files (x86)\\Arduino\\libraries\\**",
                 "C:\\Users\\Dartagnan Léonard\\Documents\\Arduino\\hardware\\tools\\**",
-                "C:\\Users\\Dartagnan Léonard\\Documents\\Arduino\\libraries\\**"
+                "C:\\Users\\Dartagnan Léonard\\Documents\\Arduino\\libraries\\**",
+                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino"
             ],
             "forcedInclude": [
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
