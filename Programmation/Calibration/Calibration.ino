@@ -1,7 +1,9 @@
 
 
 #include "Calibration.h"
+
 #define DEBUG 0
+
 // un calibration comporte juste un accelerometre donc on fait un tableau de calibration si on a 3 calibration a faire [3];
 //je vais m'arranger pour que sa le detecte au debut lors de l'alimentation quick connecte qui short une pin pour detecter !
 //et mettre le bon nombre dans lel tableau en foction de sa !
@@ -22,9 +24,10 @@ int8_t pinAccConnected[NOMBRE_ACC_MAX];        // Etat des pin detection acceler
 void setup()
 {
   Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(pinRPM), blink, RISING);
+  
   //Rpm
   Rpm_config();
+  attachInterrupt(digitalPinToInterrupt(pinRPM), blink, RISING);
   RPM_init(&Rpm);
 
   pinMode(pinSwitch, INPUT_PULLUP);

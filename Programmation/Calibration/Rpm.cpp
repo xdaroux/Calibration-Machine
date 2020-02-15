@@ -1,23 +1,23 @@
 #include "Rpm.h"
 
+#define DEBUG 0 //Se Debug est unique a se fichier
 
 /*Definition des fonctions  ===================================================*/
+//Config
 void Rpm_config(void)
 {
   /* Set up RPM*/
   pinMode(pinRPM, INPUT_PULLUP);
+
+  //set up interupt dans la main fonction 
+  //attachInterrupt(digitalPinToInterrupt(pinRPM), blink, RISING);
 }
 //init
 void RPM_init(T_RPM *rpm)
 {
- 
-  //la partie qui suit commenter dois etre dans le set up du main setup
-  //attachInterrupt(digitalPinToInterrupt(RPMpin), blink, RISING); // Can use HIGHT,LOW,CHANGE,RISING,FALLING
-  /*FIN set up RPM*/
-
   int i;
   rpm->leRpm = 0;
-  for (i = 0; i < NB_RPM; i++)
+  for (i = 0; i < NB_RPM_TEST; i++)
   {
     rpm->rpm[i] = 0;
   }
@@ -31,18 +31,18 @@ void RPM_init(T_RPM *rpm)
 void RPM_calcul(T_RPM *rpm)
 {
   //nombre de roation
-  unsigned int nbRotation = rpm->nbRotation; // enregistre local le nombre de rotation
-  rpm->nbRotation = 0;                       //mettre tous de suite a zero, car pourrais etre appeller a tout moment
+  uint16_t nbRotation = rpm->nbRotation; // enregistre local le nombre de rotation
+  rpm->nbRotation = 0;                   //mettre tous de suite a zero, car pourrais etre appeller a tout moment
 
   //timer
-  unsigned long timer = millis();
-  unsigned long timerDif = timer - rpm->timerOld;
+  uint32_t timer = millis();
+  uint32_t timerDif = timer - rpm->timerOld;
   rpm->timerOld = timer;
 
   //enregistrer
   RPM_enregistre(rpm); // enregistre le dernier rpm calculer
 
-  //calcul
+  //calcul du RPM
   rpm->leRpm = (nbRotation * 60) / (timerDif * 0.001); //Rotation / minute : (NombreRotation/timerDif msec)*1000msec * 60sec //version optimiser 0.06
 
   //etat
@@ -54,7 +54,7 @@ void RPM_enregistre(T_RPM *rpm)
 {
   int i;
 
-  for (i = (NB_RPM - 1); i > 0; i--)
+  for (i = (NB_RPM_TEST - 1); i > 0; i--)
   {
     rpm->rpm[i] = rpm->rpm[i - 1];
   }
@@ -72,13 +72,17 @@ void RPM_etat(T_RPM *rpm)
     int rpmDif = 0;
 
     // caclul pour differencier l'etat
-    for (i = 0; i < NB_RPM; i++)
+    for (i = 0; i < NB_RPM_TEST; i++)
     {
       rpmSomme += rpm->rpm[i];
     }
-    rpmMoyen = rpmSomme / NB_RPM;
+    rpmMoyen = rpmSomme / NB_RPM_TEST;
     rpmDif = rpmMoyen - rpm->leRpm;
-    /* Serial.print(rpmDif);*/
+    if (DEBUG)
+    {
+      Serial.print("Rpm diferientiel : \t");
+      Serial.println(rpmDif);
+    }
 
     // Trouver l'etat
     if (rpmDif <= -RPM_DIF_MAX)
@@ -98,9 +102,11 @@ void RPM_etat(T_RPM *rpm)
   {
     rpm->etat = ZERO;
   }
-  /*Serial.print("\t");
-  Serial.println(rpm->etat);
-  Serial.println("...");*/
+  if (DEBUG)
+  {
+    Serial.print("Etat du RPM : \t");
+    Serial.println(rpm->etat);
+  }
 }
 
 void RPM_main(T_RPM *rpm)
@@ -109,10 +115,12 @@ void RPM_main(T_RPM *rpm)
   {
     RPM_calcul(rpm);
 
-    /*Serial.println("-");
-    Serial.print("Etat :");
-    Serial.println(rpm->etat);
-    Serial.print("RPM  :");
-    Serial.println(rpm->leRpm);*/
+    if (DEBUG)
+    {
+      Serial.print("Etat : \t");
+      Serial.println(rpm->etat);
+      Serial.print("RPM  : \t");
+      Serial.println(rpm->leRpm);
+    }
   }
 }
