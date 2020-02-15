@@ -4,11 +4,20 @@
 
 Nombre de pin utiliser : 
     - 2 x 7 segment  avec decodeur/multiplexeur 7 segment entre 0 et 15 : 
-        - 4 pin ) * 5 = 20 pin 
+        - 4 pin ) * 5 = 20 pin a 30 pin 
+        - Maybe va etre 4 pin par 7 segment so 2*5*4pin 40 pins nope je vais trouver un solution fuck sa 
     -   5 swicht de sélection ACC ON ou off et maybe qui passe par le connecteur approprier, //car des fois on veux pas tester tout les senseurs 
         - 5 pin
     -   1 bouton test 
         - 1 pin
     -   5 Accelerometre 
         - 5 pin ANALOG
-        
+    
+
+    -Materiel autre 
+        Power supply 
+        cable 
+        connecteur 
+
+    
+
