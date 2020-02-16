@@ -30,30 +30,30 @@ enum
 typedef struct
 {
   volatile int etat;
-  int angleMoyen;
-  int poidsMoyen;
+  uint16_t angleMoyen;
+  uint8_t poidsMoyen;
 
-  int angleMoyenTest[NB_TEST];
-  int poidsMoyenTest[NB_TEST];
-  int numerosTest;
+  uint16_t angleMoyenTest[NB_TEST];
+  uint8_t poidsMoyenTest[NB_TEST];
+  uint8_t numerosTest;
 
-} T_calibration;
+} T_calibration_axe;
 /*===============================GLOBAL Variable====================================*/
 
-T_calibration Calibration;
+T_calibration_axe Calibration;
 T_RPM Rpm;
 T_Acc_config AccConfig;
-T_ACC ACC[DIMENSION];
+T_ACC ACC[DIMENSION]; // Ne servira plus a rien bientot
 T_ACC AccMax;
 T_ACC AccMin;
-uint16_t RawAcc[DIMENSION];
+uint16_t RawAcc[DIMENSION]; // Sert pour les tests 
 
 
 /*====================================Declaration====================================*/
-void Calibration_init(T_calibration *calib);
+void Calibration_init(T_calibration_axe *calib);
 
 /*====================================Definition====================================*/
-void Calibration_init(T_calibration *calib)
+void Calibration_init(T_calibration_axe *calib)
 {
   calib->etat = INIT;
   calib->angleMoyen = 0;

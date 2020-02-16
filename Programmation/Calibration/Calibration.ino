@@ -23,7 +23,7 @@ void setup()
   
   //Rpm
   Rpm_config();
-  attachInterrupt(digitalPinToInterrupt(pinRPM), blink, RISING);
+  attachInterrupt(digitalPinToInterrupt(pinRPM), blink, FALLING); // changement plus precis dans le falling que rising se type de senseur ! 
   RPM_init(&Rpm);
 
   pinMode(pinSwitch, INPUT_PULLUP);
@@ -61,6 +61,11 @@ void loop()
   {
   /*INIT  =====================================================================*/
   case INIT:
+    if(digitalRead(2)==LOW)
+    {
+      Serial.print("ON \t");
+      Serial.println(digitalRead(2));
+    }
     
     //Regarde les connection des accelerometres si ont changer
     Acc_config_change(&AccConfig);
@@ -80,10 +85,6 @@ void loop()
   /*START =====================================================================*/
   case START:
     Serial.println("START");
-
-    // ici faut j'att que le sensor passe devant appel interupt fontion qui amener par lui meme l'etat a TEST
-    // je veux faire au minimum dix test par capteur ! donc sa va alterner entre STABLE et TEST 10 fois accumuler les moyennes !
-    // calcul pour 2 degree itteration
 
     timeEntreMesure = (double)(((1 / ((double)Rpm.leRpm / 60)) / DIMENSION) * 1000000); // 60 conversiont RPM par RPS, 1 passer de HZ e Periode, DIMENSION nb de test sur 360 degree
     Calibration.etat = TEST;
