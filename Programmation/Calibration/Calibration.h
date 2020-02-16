@@ -42,6 +42,7 @@ typedef struct
 
 T_calibration Calibration;
 T_RPM Rpm;
+T_Acc_config AccConfig;
 T_ACC ACC[DIMENSION];
 T_ACC AccMax;
 T_ACC AccMin;
