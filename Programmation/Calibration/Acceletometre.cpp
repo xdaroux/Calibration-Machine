@@ -22,6 +22,7 @@ void Acc_config_init(T_Acc_config *accConfig)
   }
 }
 
+//Acc_config_change
 void Acc_config_change(T_Acc_config *accConfig)
 {
   int8_t tmp = 0;
@@ -182,6 +183,8 @@ void ACC_init(T_ACC *acc)
   acc->gAcc = 0;
   acc->count = 0;
 }
+
+//ACC_init_taleau
 void ACC_init_tableau(T_ACC *acc, int dimension)
 {
   int i;
