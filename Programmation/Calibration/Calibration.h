@@ -19,10 +19,10 @@ enum
   CALCUL_INTERMEDIAIRE,
   CALCUL_MOYENNE,
   AFFICHER
-}State;
+} State;
 //fin etat
 
-#define NB_TEST 10
+#define NB_TEST 20
 //acc
 #define DIMENSION 100 // sois la dimension du tableau pour le nb de lecture dans une rotation du systeme
 
@@ -30,23 +30,29 @@ enum
 typedef struct
 {
   //volatile int etat;
-  uint16_t angleMoyen;
+  float angleMoyenMin;
+  float angleMoyenMax;
+
   //uint8_t poidsMoyen;
 
-  uint16_t angleMoyenTest[NB_TEST];
-  T_ACC minValue[NB_TEST];
-  T_ACC maxValue[NB_TEST];
-  
+  uint16_t angleMoyenTest[NB_TEST]; // a enlever dans pas lon ...
+
+  T_ACC minValue[NB_TEST]; //contenir les valeur de tout les test
+  T_ACC maxValue[NB_TEST]; // contenir les valeur de tout les test
+
+  T_ACC minMoyen; // faire la moyenne
+  T_ACC maxMoyen; // faire la moyenne
+
   //uint8_t poidsMoyenTest[NB_TEST];
   uint8_t numerosTest;
 
 } T_calibration_axe;
 
-typedef struct 
+typedef struct
 {
   volatile uint8_t etat = INIT;
 
-}T_calibration;
+} T_calibration;
 
 /*===============================GLOBAL Variable====================================*/
 
@@ -57,23 +63,22 @@ T_Acc_config AccConfig;
 //T_ACC ACC[DIMENSION]; // Ne servira plus a rien bientot
 T_ACC AccMax;
 T_ACC AccMin;
-int16_t RawAcc[DIMENSION]; // Sert pour les tests 
+int16_t RawAcc[DIMENSION]; // Sert pour les tests
 
-
-void algo_peak(uint16_t*tableau, int dimension, T_calibration_axe * calibAxe);
-
-
+void algo_peak(uint16_t *tableau, int dimension, T_calibration_axe *calibAxe);
 
 /*====================================Declaration====================================*/
 void Calibration_init(T_calibration_axe *calib);
-void algo_peak(int16_t*tableau, int dimension, T_calibration_axe * calibAxe);
-void calibration_axe_afficher(T_calibration_axe * calibAxe);
+void algo_peak(int16_t *tableau, int dimension, T_calibration_axe *calibAxe);
+void calibration_axe_afficher(T_calibration_axe *calibAxe);
+void calibration_axe_calcul_moyenne_angle(T_calibration_axe *calibAxe, uint16_t nb_test);
+
 
 /*====================================Definition====================================*/
 void Calibration_init(T_calibration_axe *calib)
 {
-  calib->angleMoyen = 0;
-  //calib->poidsMoyen = 0;
+  calib->angleMoyenMin = 0;
+  calib->angleMoyenMax = 0;  //calib->poidsMoyen = 0;
   int i;
   for (i = 0; i < NB_TEST; i++)
   {
@@ -83,27 +88,26 @@ void Calibration_init(T_calibration_axe *calib)
   calib->numerosTest = 0;
 }
 
-void algo_peak(int16_t*tableau, int dimension, T_calibration_axe * calibAxe)
+void algo_peak(int16_t *tableau, int dimension, T_calibration_axe *calibAxe)
 {
   int i;
   uint16_t highestValue = 0;
   uint16_t lowestValue = 1027;
 
-  for(i=0;i<DIMENSION;i++)
+  for (i = 0; i < DIMENSION; i++)
   {
-    if(tableau[i] > highestValue)
+    if (tableau[i] > highestValue)
     {
       highestValue = tableau[i];
-      calibAxe->maxValue[calibAxe->numerosTest].count = i ;
-
+      calibAxe->maxValue[calibAxe->numerosTest].count = i;
     }
 
-    if(tableau[i] < lowestValue)
+    if (tableau[i] < lowestValue)
     {
-      if(tableau[i] > 0)
+      if (tableau[i] > 0)
       {
-      lowestValue = tableau[i]; 
-      calibAxe->minValue[calibAxe->numerosTest].count = i ;
+        lowestValue = tableau[i];
+        calibAxe->minValue[calibAxe->numerosTest].count = i;
       }
     }
   }
@@ -113,39 +117,78 @@ void algo_peak(int16_t*tableau, int dimension, T_calibration_axe * calibAxe)
   ACC_convertRawToG(&calibAxe->maxValue[calibAxe->numerosTest], 520, 107);
 }
 
-
-void calibration_axe_afficher(T_calibration_axe * calibAxe)
+void calibration_axe_afficher(T_calibration_axe *calibAxe)
 {
-  Serial.print("Angle Moyenne : ");
-  Serial.println(calibAxe->angleMoyen);
+  //Serial.print("Angle Moyenne : ");
+  //Serial.println(calibAxe->angleMoyen);
 
-  Serial.println("| Angle |MAX count|MAX rawAcc|MAX gAcc|MIN count|MIN rawAcc|MIN gAcc");
-  for(int i = 0; i< NB_TEST; i++)
+  Serial.println("MAX count|MAX rawAcc|MAX gAcc|MIN count|MIN rawAcc|MIN gAcc");
+  for (int i = 0; i < NB_TEST; i++)
   {
-    
+
     Serial.print("\t");
-    Serial.print(calibAxe->angleMoyenTest[i]);
     ACC_afficher(&calibAxe->maxValue[i]);
     ACC_afficher(&calibAxe->minValue[i]);
     Serial.print("\n");
-    //Serial.print(calibAxe->maxValue[i]);
-    
-    //Serial.println(calibAxe->minValue[i]);
-    
   }
-}
+  Serial.println("------------------------------Moyenne------------------------------");
+  Serial.print("\t");
+  ACC_afficher(&calibAxe->maxMoyen);
+  ACC_afficher(&calibAxe->minMoyen);
+  Serial.print("\n");
+  Serial.print("Angle Moyen MAX : ");
+  Serial.println(calibAxe->angleMoyenMax);
+  Serial.print("Angle Moyen MIN : ");
+  Serial.println(calibAxe->angleMoyenMin);
+   Serial.print("Angle diff : ");
+  Serial.println(calibAxe->angleMoyenMin - calibAxe->angleMoyenMax);
 
+}
 
 void configuration_init()
 {
-  for(int i = 0; i <DIMENSION; i++)
+  for (int i = 0; i < DIMENSION; i++)
   {
     RawAcc[i] = -1;
-
   }
-  
 }
-void moyenne(T_ACC * acc[],uint16_t dimension)
+void calibration_axe_calcul_moyenne_angle(T_calibration_axe *calibAxe, uint16_t nb_test)
 {
+  int i = 0;
+  int tmpRaw = 0;
+  float tmpGacc = 0;
+  int tmpCount = 0; //angle moyen
+  // max value
+  for (i = 0; i < nb_test; i++)
+  {
+    tmpCount += calibAxe->maxValue[i].count;
+    tmpRaw += calibAxe->maxValue[i].rawAcc;
+    tmpGacc += calibAxe->maxValue[i].gAcc;
+  }
+
+  calibAxe->maxMoyen.count = tmpCount / nb_test;
+  calibAxe->maxMoyen.rawAcc = tmpRaw / nb_test;
+  calibAxe->maxMoyen.gAcc = tmpGacc / nb_test;
+
+  tmpRaw = 0;
+  tmpGacc = 0;
+  tmpCount = 0; 
+  //min value
+  for (i = 0; i < nb_test; i++)
+  {
+    tmpCount += calibAxe->minValue[i].count;
+    tmpRaw += calibAxe->minValue[i].rawAcc;
+    tmpGacc += calibAxe->minValue[i].gAcc;
+  }
+
+  calibAxe->minMoyen.count = tmpCount / nb_test;
+  calibAxe->minMoyen.rawAcc = tmpRaw / nb_test;
+  calibAxe->minMoyen.gAcc = tmpGacc / nb_test;
+
+  //calcul angle moyenne 
+  
+  calibAxe->angleMoyenMax = calibAxe->maxMoyen.count * (3.6); // 3.6 360/DIMENSION
+  calibAxe->angleMoyenMin = calibAxe->minMoyen.count * (3.6); //360/DIMENSION
+
 
 }

@@ -2,7 +2,7 @@
 
 #include "Calibration.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 // un calibration comporte juste un accelerometre donc on fait un tableau de calibration si on a 3 calibration a faire [3];
 //je vais m'arranger pour que sa le detecte au debut lors de l'alimentation quick connecte qui short une pin pour detecter !
@@ -151,31 +151,19 @@ void loop()
     }
     else
     {
-      calibration_axe_afficher(&CalibrationAxe[AccConfig.testAccNum]);
+      //calibration_axe_afficher(&CalibrationAxe[AccConfig.testAccNum]);
       Calibration.etat = CALCUL_MOYENNE;
     }
-
-    /*i = 0;
-    //calcul du peak
-    Serial.print("RPM : ");
-    Serial.println(Rpm.leRpm);
-    Serial.print("TIME entre Mesure : ");
-    Serial.println(timeEntreMesure);
-    Serial.println("================");
-
-    for (i = 0; i < DIMENSION - 1; i++)
-    {
-      ACC_convertRawToG(&ACC[i], 520, 107);
-      Serial.print(ACC[i].gAcc);
-      Serial.print("\t");
-      Serial.println(ACC[i].rawAcc);
-    }
-    Serial.println("================");
-    //Calibration.etat = CALCUL_MOYENNE;*/
   }
   break;
   case CALCUL_MOYENNE: // calcul de la moyenne
     Serial.println("CALCUL MOYENNE");
+
+    calibration_axe_calcul_moyenne_angle(&CalibrationAxe[AccConfig.testAccNum], NB_TEST);
+    calibration_axe_afficher(&CalibrationAxe[AccConfig.testAccNum]);
+
+
+
     AccConfig.testAccNum++; //Passer a la prochaine pin
     Calibration.etat = INIT;
     break;

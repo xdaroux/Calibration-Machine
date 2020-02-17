@@ -217,8 +217,7 @@ void ACC_read_raw_acc(int16_t *rawAcc, int analogPin, int count)
 //afficher
 void ACC_afficher(T_ACC *acc)
 {
-  Serial.print("\t");
-   Serial.print("\t");
+  
   Serial.print(acc->count);
    Serial.print("\t");
   Serial.print("\t");
@@ -226,7 +225,8 @@ void ACC_afficher(T_ACC *acc)
    Serial.print("\t");
   Serial.print("\t");
   Serial.print(acc->gAcc);
-  
+  Serial.print("\t");
+  Serial.print("\t");
   
   
 }
