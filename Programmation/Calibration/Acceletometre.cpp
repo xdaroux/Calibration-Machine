@@ -210,18 +210,31 @@ void ACC_read(T_ACC *acc, int analogPin, int count)
   acc->count = count;
 }
 
-void ACC_read_raw_acc(uint16_t *rawAcc, int analogPin, int count)
+void ACC_read_raw_acc(int16_t *rawAcc, int analogPin, int count)
 {
   *rawAcc = analogRead(analogPin);
 }
 //afficher
 void ACC_afficher(T_ACC *acc)
 {
-  Serial.print("\n");
+  Serial.print("\t");
+   Serial.print("\t");
   Serial.print(acc->count);
+   Serial.print("\t");
   Serial.print("\t");
   Serial.print(acc->rawAcc);
+   Serial.print("\t");
   Serial.print("\t");
   Serial.print(acc->gAcc);
-  // Serial.print("\n");
+  
+  
+  
+}
+
+void ACC_affichier_raw_acc(int16_t *rawAcc, int count)
+{
+  for(int i = 0; i< count;i++)
+  {
+    Serial.println(rawAcc[i]);
+  }
 }

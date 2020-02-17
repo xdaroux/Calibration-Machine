@@ -14,30 +14,31 @@ unsigned long timerSwitch = millis();
 
 #define pinSwitch 13
 
-
-double timeEntreMesure;         //Temps entre chaque lecture analog rn fonction du Rpm
+double timeEntreMesure; //Temps entre chaque lecture analog rn fonction du Rpm
 
 void setup()
 {
   Serial.begin(9600);
-  
+
   //Rpm
   Rpm_config();
-  attachInterrupt(digitalPinToInterrupt(pinRPM), blink, FALLING); // changement plus precis dans le falling que rising se type de senseur ! 
+  attachInterrupt(digitalPinToInterrupt(pinRPM), blink, FALLING); // changement plus precis dans le falling que rising se type de senseur !
   RPM_init(&Rpm);
 
   pinMode(pinSwitch, INPUT_PULLUP);
 
-
-
   //calibration
-  Calibration_init(&Calibration);
+  Calibration_init(CalibrationAxe);
 
   //acceleration
   analogReference(EXTERNAL); // IMPORTANT 3.3V por cet accelerometre
-  ACC_init_tableau(&ACC[0], DIMENSION);
-  Acc_config_pin(); //Configurer les digitals pin qui detecte l'activation des Accelerometres
-  Acc_config_init(&AccConfig);  // Initialise des parametres de Acc_config
+  //ACC_init_tableau(&ACC[0], DIMENSION);
+  Acc_config_pin();            //Configurer les digitals pin qui detecte l'activation des Accelerometres
+  Acc_config_init(&AccConfig); // Initialise des parametres de Acc_config
+
+
+  //calibration
+  
 
   /*
   ici il va falloir faire une condition pour savoir combien acc/l/rometre
@@ -46,7 +47,6 @@ void setup()
   */
 
   //init tableau vite
-
 }
 
 void loop()
@@ -61,12 +61,7 @@ void loop()
   {
   /*INIT  =====================================================================*/
   case INIT:
-    if(digitalRead(2)==LOW)
-    {
-      Serial.print("ON \t");
-      Serial.println(digitalRead(2));
-    }
-    
+
     //Regarde les connection des accelerometres si ont changer
     Acc_config_change(&AccConfig);
     //Gestion du bouton test
@@ -84,7 +79,24 @@ void loop()
     break;
   /*START =====================================================================*/
   case START:
-    Serial.println("START");
+    if (DEBUG)
+    {
+      Serial.println("=============================");
+      Serial.println("START");
+      Serial.print("Acc # : ");
+      Serial.println(AccConfig.testAccNum);
+      Serial.print("Test # : ");
+      Serial.println(CalibrationAxe[AccConfig.testAccNum].numerosTest);
+      // Gestion e quelle acc on est rendu !!!
+    }
+
+    Calibration.etat = PRE_CALCUL;
+    break;
+  case PRE_CALCUL:
+    if (DEBUG)
+    {
+      Serial.println("PRE_CALCUL");
+    }
 
     timeEntreMesure = (double)(((1 / ((double)Rpm.leRpm / 60)) / DIMENSION) * 1000000); // 60 conversiont RPM par RPS, 1 passer de HZ e Periode, DIMENSION nb de test sur 360 degree
     Calibration.etat = TEST;
@@ -105,7 +117,8 @@ void loop()
         {
 
           timerOlderMicros = micros();
-          ACC_read(&ACC[i], ACC_0, i);
+          // ACC_read(&ACC[i], ACC_0, i);
+          ACC_read_raw_acc(&RawAcc[i], AccConfig.pinAnalogReadSequence[AccConfig.testAccNum], DIMENSION);
           i++;
         }
       }
@@ -115,8 +128,26 @@ void loop()
 
   case CALCUL_INTERMEDIAIRE:
   {
-    Serial.println("CALCUL_INTERMEDIAIRE");
-    i = 0;
+    if (DEBUG)
+    {
+      Serial.println("CALCUL_INTERMEDIAIRE");
+      ACC_affichier_raw_acc(RawAcc, DIMENSION); // affiche le data lu en raw
+    }
+    // trouver les peak min et max
+    algo_peak(RawAcc, DIMENSION, &CalibrationAxe[AccConfig.testAccNum]);
+    //enregistre les valuer min max dans calibration.Axe.nbtest
+     CalibrationAxe[AccConfig.testAccNum].numerosTest++;
+    if (CalibrationAxe[AccConfig.testAccNum].numerosTest < NB_TEST)
+    {
+      Calibration.etat = START;
+    }
+    else
+    {
+      calibration_axe_afficher(&CalibrationAxe[AccConfig.testAccNum]);
+      Calibration.etat = CALCUL_MOYENNE;
+    }
+
+    /*i = 0;
     //calcul du peak
     Serial.print("RPM : ");
     Serial.println(Rpm.leRpm);
@@ -127,14 +158,16 @@ void loop()
     for (i = 0; i < DIMENSION - 1; i++)
     {
       ACC_convertRawToG(&ACC[i], 520, 107);
-      Serial.println(ACC[i].gAcc);
+      Serial.print(ACC[i].gAcc);
+      Serial.print("\t");
+      Serial.println(ACC[i].rawAcc);
     }
     Serial.println("================");
-    Calibration.etat = CALCUL;
+    //Calibration.etat = CALCUL_MOYENNE;*/
   }
   break;
-  case CALCUL: // calcul de la moyenne
-    Serial.println("CALCUL");
+  case CALCUL_MOYENNE: // calcul de la moyenne
+    Serial.println("CALCUL MOYENNE");
     AccConfig.testAccNum++; //Passer a la prochaine pin
     Calibration.etat = INIT;
     break;
@@ -150,7 +183,7 @@ void loop()
   }
 }
 
-/*====================================Interupt====================================*/
+/*Interupt=====================================================================*/
 void blink()
 {
 
@@ -169,5 +202,3 @@ void blink()
     }
   }
 }
-
-
