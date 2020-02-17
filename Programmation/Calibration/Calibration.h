@@ -145,3 +145,7 @@ void configuration_init()
   }
   
 }
+void moyenne(T_ACC * acc[],uint16_t dimension)
+{
+
+}
