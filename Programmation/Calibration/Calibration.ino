@@ -2,7 +2,7 @@
 
 #include "Calibration.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 // un calibration comporte juste un accelerometre donc on fait un tableau de calibration si on a 3 calibration a faire [3];
 //je vais m'arranger pour que sa le detecte au debut lors de l'alimentation quick connecte qui short une pin pour detecter !
@@ -18,7 +18,7 @@ double timeEntreMesure; //Temps entre chaque lecture analog rn fonction du Rpm
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   //Rpm
   Rpm_config();
@@ -36,9 +36,7 @@ void setup()
   Acc_config_pin();            //Configurer les digitals pin qui detecte l'activation des Accelerometres
   Acc_config_init(&AccConfig); // Initialise des parametres de Acc_config
 
-
   //calibration
-  
 
   /*
   ici il va falloir faire une condition pour savoir combien acc/l/rometre
@@ -64,6 +62,14 @@ void loop()
 
     //Regarde les connection des accelerometres si ont changer
     Acc_config_change(&AccConfig);
+
+    // remet tout les compteurs a Zero
+    AccConfig.testAccNum = 0;
+    for (i = 0; i < NOMBRE_ACC_MAX; i++)
+    {
+      CalibrationAxe[i].numerosTest = 0;
+    }
+
     //Gestion du bouton test
     if (millis() - timerSwitch > 250)
     {
@@ -133,10 +139,12 @@ void loop()
       Serial.println("CALCUL_INTERMEDIAIRE");
       ACC_affichier_raw_acc(RawAcc, DIMENSION); // affiche le data lu en raw
     }
-    // trouver les peak min et max
-    algo_peak(RawAcc, DIMENSION, &CalibrationAxe[AccConfig.testAccNum]);
+
+    // trouver les peak min et max    &
     //enregistre les valuer min max dans calibration.Axe.nbtest
-     CalibrationAxe[AccConfig.testAccNum].numerosTest++;
+    algo_peak(RawAcc, DIMENSION, &CalibrationAxe[AccConfig.testAccNum]);
+
+    CalibrationAxe[AccConfig.testAccNum].numerosTest++;
     if (CalibrationAxe[AccConfig.testAccNum].numerosTest < NB_TEST)
     {
       Calibration.etat = START;

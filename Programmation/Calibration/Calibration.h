@@ -23,7 +23,6 @@ enum
 //fin etat
 
 #define NB_TEST 10
-
 //acc
 #define DIMENSION 100 // sois la dimension du tableau pour le nb de lecture dans une rotation du systeme
 
