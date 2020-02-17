@@ -165,7 +165,17 @@ void loop()
 
 
     AccConfig.testAccNum++; //Passer a la prochaine pin
-    Calibration.etat = INIT;
+    if(AccConfig.testAccNum < AccConfig.numberAccConnected)
+    {
+
+      Calibration.etat = START;
+    }
+    else
+    {
+      Calibration.etat = INIT;
+    }
+    
+    
     break;
   case AFFICHER:
     Serial.println("AFFICHER");
