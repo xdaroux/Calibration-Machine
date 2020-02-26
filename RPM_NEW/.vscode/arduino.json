@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:mega",
+    "sketch": "RPM_NEW\\RPM_NEW.ino",
+    "port": "COM7",
+    "configuration": "cpu=atmega2560"
+}
