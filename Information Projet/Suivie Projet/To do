@@ -4,3 +4,37 @@
 -- faire un decodeur pour sortie des chiffre de 1 a 12
 
 -- faire un afficheur 7 segment ou se qu'il va demander ! 
+
+/* 2020-02-24 */
+On pousse le projet plus loins, je fait un produit semi final pour un de ses machines. pour fin de tests en essais pour 1 mois environs. 
+
+/*piece*/
+
+Minimum 
+3 accélérometre pas cher couler dans l'époxy et un casins d'alu ADXL-335 3 axe 
+1 Proxymitie sensor
+3 switch de sélection d'acc 
+3 afficheur indépendant 0 a 99  ACC position 
+3 Afficheur indépendant 0 - 99 ACC Amplitude  
+1 afficheur RPM 0 - 9999
+1 Arduino Mega
+
+Maybe can bus screen qui remplace tout les autres systemes
+
+/* Se qu il a a sa compagnie deja */ 
+Boitier en plastique 
+Switch 
+
+
+Alimentation 120V AC to 12V et 5 V DC 
+
+
+Se qu moi je dois faire : 
+
+- Shéma électrique DRAW.IO 
+    - Penser que les connecteur ACC short 1 pin quand connecter pour détecter avec le micro processeur.
+- Finalisation du CODE // partie affichage , regarder CAN BUS /// en plus faut que jajoute des fateur de correction !! / dephasage 
+    - Pour adapter l'amplitude 
+    - Pour adapter la position en fonction de leur fiche de lecture su la machine un MAP(x,y,z,a)
+- Assemblage du produit semi final 
+- tester 
