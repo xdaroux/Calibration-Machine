@@ -8,19 +8,18 @@
             ],
             "includePath": [
                 "${workspaceRoot}",
-                "D:\\Projet\\Compagnie\\GitKraken\\Mr.DriveShaft\\Programmation\\Calibration",
+                "D:\\9999-OLD\\Projet\\Compagnie\\GitKraken\\Mr.DriveShaft\\Programmation\\Calibration",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
                 "C:\\Program Files (x86)\\Arduino\\tools\\**",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\tools\\**",
                 "C:\\Program Files (x86)\\Arduino\\libraries\\**",
-                "C:\\Users\\Dartagnan Léonard\\Documents\\Arduino\\hardware\\tools\\**",
                 "C:\\Users\\Dartagnan Léonard\\Documents\\Arduino\\libraries\\**",
                 "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino"
             ],
             "forcedInclude": [
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
             ],
-            "intelliSenseMode": "clang-x64",
+            "intelliSenseMode": "msvc-x64",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/Hostx64/x64/cl.exe"
