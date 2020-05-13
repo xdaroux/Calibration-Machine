@@ -1,4 +1,4 @@
-#define NB_RPM 5
+#define NB_RPM 5	//Nombre de rpm enregistre dans le tableau
 #define MICROStoSECONDE 0.000001	  // Multiplication pour transformer des uSec en S 	
 #define SECONDEtoMINUTE 60
 #define MICROStoMINUTE  0.00006
@@ -70,7 +70,7 @@ void rpm_calcul(rpm_t *rpm)
 		tmpRpm = (uint32_t)((1 / ((temps)*MICROStoSECONDE)) * SECONDEtoMINUTE);
 	}
 
-	// Si il n'y a aucun uptate de valeur depuir 0.6 seconde sois 100Hz RPM = 0
+	// Si il n'y a aucun uptate de valeur depuis 0.6 seconde sois 100Hz RPM = 0
 	if (micros() - rpm->timer > DELAY_ZERO_RPM)
 	{
 		tmpRpm = 0;
@@ -94,7 +94,7 @@ void rpm_calcul(rpm_t *rpm)
 	//Enregistre le vrai RPM en moyenne 
 	rpm->rpm = sommeRpm / NB_RPM;
 
-		if (DEBUG)
+	if (DEBUG)
 	{
 		Serial.print("temps Entre 2 Interupt : ");
 		Serial.println(temps);
