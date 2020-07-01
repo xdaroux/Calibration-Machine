@@ -199,7 +199,7 @@ void loop()
     break;
   case AFFICHER:
     Serial.println("AFFICHER");
-    // vas gerer le systeme d<affichage future que je ne connait pas encore
+    // vas gerer le systeme d'affichage future que je ne connait pas encore
     //j'aimerais des 7 segment version geante qui affichye un chiffre en 0 et 12
     break;
   default:
