@@ -16,9 +16,16 @@ unsigned long timerSwitch = millis();
 
 double timeEntreMesure; //Temps entre chaque lecture analog rn fonction du Rpm
 
+/*Display*********************/
+   extern  TM1637 RpmDisplay;
+   extern  TM1637 Acc0Display;
+   extern  TM1637 Acc1Display;
+   extern  TM1637 Acc2Display;
+   extern  TM1637 Acc3Display;
+
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   //Rpm
   Rpm_config();
@@ -37,6 +44,10 @@ void setup()
   Acc_config_init(&AccConfig); // Initialise des parametres de Acc_config
 
   //calibration
+/*dISPLAY */
+  setup_displayData();
+  
+
 
   /*
   ici il va falloir faire une condition pour savoir combien acc/l/rometre
@@ -51,10 +62,19 @@ void loop()
 {
   //Variable
   uint8_t i = 0;
-
+ 
   //Calcul RPM
   RPM_main(&Rpm);
-
+  //*ZONE de TEST *//-----------------------------------------------------------------------------------------------------------------
+  //ACC
+  uptade_display_acc(Acc0Display,99,99);
+  uptade_display_acc(Acc1Display,99,99);
+  uptade_display_acc(Acc2Display,99,99);
+  uptade_display_acc(Acc3Display,99,99);
+  //RPM
+  uptade_display_rpm(RpmDisplay,9999);
+  delay(1000);
+/*-------------------------------------------------------------------------------------------------------------------------------------*/
   switch (Calibration.etat)
   {
   /*INIT  =====================================================================*/

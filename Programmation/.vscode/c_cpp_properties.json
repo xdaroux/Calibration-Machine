@@ -4,17 +4,21 @@
             "name": "Win32",
             "defines": [
                 "ARDUINO=10800",
-                "USBCON"
+                "USBCON",
+                "_DEBUG",
+                "_UNICODE"
             ],
             "includePath": [
                 "${workspaceRoot}",
-                "D:\\9999-OLD\\Projet\\Compagnie\\GitKraken\\Mr.DriveShaft\\Programmation\\Calibration",
+                "D:\\Programmation\\Mr.DriveShaft\\Calibration-Machine\\Programmation\\Calibration",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
                 "C:\\Program Files (x86)\\Arduino\\tools\\**",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\tools\\**",
                 "C:\\Program Files (x86)\\Arduino\\libraries\\**",
-                "C:\\Users\\Dartagnan Léonard\\Documents\\Arduino\\libraries\\**",
-                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino"
+                "C:\\Users\\darta\\Documents\\Arduino\\libraries\\**",
+                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino",
+                "D:\\9999-OLD\\Projet\\Compagnie\\GitKraken\\Mr.DriveShaft\\Programmation\\Calibration",
+                "C:\\Users\\Dartagnan Léonard\\Documents\\Arduino\\libraries\\**"
             ],
             "forcedInclude": [
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"

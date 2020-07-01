@@ -36,7 +36,7 @@ typedef struct
 
   //uint8_t poidsMoyen;
 
-  uint16_t angleMoyenTest[NB_TEST]; // a enlever dans pas lon ...
+  uint16_t angleMoyenTest[NB_TEST]; // a enlever dans pas long ...
 
   T_ACC minValue[NB_TEST]; //contenir les valeur de tout les test
   T_ACC maxValue[NB_TEST]; // contenir les valeur de tout les test

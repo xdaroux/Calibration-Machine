@@ -59,3 +59,4 @@ void ACC_afficher(T_ACC *acc);
 
 void ACC_read_raw_acc(int16_t *rawAcc, int analogPin, int count);
 void ACC_affichier_raw_acc(int16_t *rawAcc, int count);
+
