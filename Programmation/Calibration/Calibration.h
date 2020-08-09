@@ -3,9 +3,9 @@
 /*Include======================================================================*/
 
 #include <Arduino.h>
-#include "Rpm.h"
 #include "Accelerometre.h"
 #include "displayData.h"
+#include "RPM_NEW.h"
 
 /*Define=======================================================================*/
 
@@ -59,7 +59,8 @@ typedef struct
 
 T_calibration_axe CalibrationAxe[NOMBRE_ACC_MAX];
 T_calibration Calibration;
-T_RPM Rpm;
+//T_RPM Rpm; // OLD RPM
+rpm_t Rpm;
 T_Acc_config AccConfig;
 //T_ACC ACC[DIMENSION]; // Ne servira plus a rien bientot
 T_ACC AccMax;

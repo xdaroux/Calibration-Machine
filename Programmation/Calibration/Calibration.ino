@@ -12,6 +12,7 @@ volatile uint8_t FlagTest = 0;
 uint32_t timerOlderMicros = micros();
 
 unsigned long timerSwitch = millis();
+unsigned long timerAfficherRPM = millis();
 
 #define pinSwitch 13
 
@@ -29,9 +30,10 @@ void setup()
   Serial.begin(115200);
 
   //Rpm
-  Rpm_config();
+ // Rpm_config();
+  rpm_init(&Rpm);
   attachInterrupt(digitalPinToInterrupt(pinRPM), blink, FALLING); // changement plus precis dans le falling que rising se type de senseur !
-  RPM_init(&Rpm);
+ 
 
   pinMode(pinSwitch, INPUT_PULLUP);
 
@@ -65,16 +67,14 @@ void loop()
   uint8_t i = 0;
  
   //Calcul RPM
-  RPM_main(&Rpm);
-  uptade_display_rpm(RpmDisplay,Rpm.leRpm);
-  //*ZONE de TEST *//-----------------------------------------------------------------------------------------------------------------
-  //ACC
- 
-/*-------------------------------------------------------------------------------------------------------------------------------------*/
- if(SIMPLE_DEBUG)
-    {
-      Serial.println(Calibration.etat);
-    }
+  
+  if(millis() - timerAfficherRPM > 500)
+  {
+    rpm_calcul(&Rpm);
+    uptade_display_rpm(RpmDisplay,Rpm.rpm);
+    timerAfficherRPM = millis();
+  }
+
   switch (Calibration.etat)
   {
   /*INIT  =====================================================================*/
@@ -93,13 +93,8 @@ void loop()
     //Gestion du bouton test
     if (millis() - timerSwitch > 250)
     {
-      if(SIMPLE_DEBUG)
-      {
-        Serial.print("RPM : ");
-        Serial.println(Rpm.leRpm);
-      }
-      if (Rpm.leRpm > RPM_MIN)
-      {
+      if (Rpm.rpm > RPM_MIN)
+      {   
         if (digitalRead(pinSwitch) == 0)
         {
           Calibration.etat = START;
@@ -129,14 +124,17 @@ void loop()
       Serial.println("PRE_CALCUL");
     }
 
-    timeEntreMesure = (double)(((1 / ((double)Rpm.leRpm / 60)) / DIMENSION) * 1000000); // 60 conversiont RPM par RPS, 1 passer de HZ e Periode, DIMENSION nb de test sur 360 degree
+    timeEntreMesure = (double)(((1 / ((double)Rpm.rpm / 60)) / DIMENSION) * 1000000); // 60 conversiont RPM par RPS, 1 passer de HZ e Periode, DIMENSION nb de test sur 360 degree
     Calibration.etat = TEST;
 
     break;
   case TEST:
   {
     i = 0;
-    //Serial.println("TEST");
+    if(DEBUG)
+    {
+    Serial.println("TEST");
+    }
     // calibraion.angleMoyenTest[calibration.numerosTest] = test(); // faire le test s'incroniser ! avec la rotation
     while (Calibration.etat != CALCUL_INTERMEDIAIRE)
     {
@@ -221,22 +219,23 @@ void loop()
   }
 }
 
-/*Interupt=====================================================================*/
+/*Interupt lier avec le RPM=====================================================================*/
 void blink()
 {
-
-  Rpm.nbRotation++;
-
-  if (Calibration.etat == TEST)
+	//Pour la suite de test des ACC
+  if(Calibration.etat == TEST)
   {
-    if (FlagTest == 0)
+    if(FlagTest == 0)
     {
       FlagTest++;
     }
     else
     {
-      FlagTest--;
+       FlagTest--;
       Calibration.etat = CALCUL_INTERMEDIAIRE;
     }
   }
+  //Pour le RPM 
+	Rpm.timerOlder = Rpm.timer;
+	Rpm.timer = micros();
 }
