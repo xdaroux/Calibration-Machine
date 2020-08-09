@@ -3,6 +3,7 @@
 #include "Calibration.h"
 
 #define DEBUG 0
+#define SIMPLE_DEBUG 0
 
 // un calibration comporte juste un accelerometre donc on fait un tableau de calibration si on a 3 calibration a faire [3];
 //je vais m'arranger pour que sa le detecte au debut lors de l'alimentation quick connecte qui short une pin pour detecter !
@@ -25,7 +26,7 @@ double timeEntreMesure; //Temps entre chaque lecture analog rn fonction du Rpm
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   //Rpm
   Rpm_config();
@@ -65,21 +66,20 @@ void loop()
  
   //Calcul RPM
   RPM_main(&Rpm);
+  uptade_display_rpm(RpmDisplay,Rpm.leRpm);
   //*ZONE de TEST *//-----------------------------------------------------------------------------------------------------------------
   //ACC
-  uptade_display_acc(Acc0Display,99,99);
-  uptade_display_acc(Acc1Display,99,99);
-  uptade_display_acc(Acc2Display,99,99);
-  uptade_display_acc(Acc3Display,99,99);
-  //RPM
-  uptade_display_rpm(RpmDisplay,9999);
-  delay(1000);
+ 
 /*-------------------------------------------------------------------------------------------------------------------------------------*/
+ if(SIMPLE_DEBUG)
+    {
+      Serial.println(Calibration.etat);
+    }
   switch (Calibration.etat)
   {
   /*INIT  =====================================================================*/
   case INIT:
-
+   
     //Regarde les connection des accelerometres si ont changer
     Acc_config_change(&AccConfig);
 
@@ -93,6 +93,11 @@ void loop()
     //Gestion du bouton test
     if (millis() - timerSwitch > 250)
     {
+      if(SIMPLE_DEBUG)
+      {
+        Serial.print("RPM : ");
+        Serial.println(Rpm.leRpm);
+      }
       if (Rpm.leRpm > RPM_MIN)
       {
         if (digitalRead(pinSwitch) == 0)
@@ -199,11 +204,18 @@ void loop()
     break;
   case AFFICHER:
     Serial.println("AFFICHER");
+
+  uptade_display_acc(Acc0Display,00,00);
+  uptade_display_acc(Acc1Display,11,11);
+  uptade_display_acc(Acc2Display,22,22);
+  uptade_display_acc(Acc3Display,33,33);
+  //RPM
+  
     // vas gerer le systeme d'affichage future que je ne connait pas encore
     //j'aimerais des 7 segment version geante qui affichye un chiffre en 0 et 12
     break;
   default:
-    //CALIBRATION.etat = INIT;
+    Calibration.etat = INIT;
     //Serial.print("default");
     break;
   }

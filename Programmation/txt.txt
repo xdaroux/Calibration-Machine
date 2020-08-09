@@ -1,0 +1,7 @@
+-- Se que jai a faire 
+
+- Ajout d un potentiometre qui pemet de decaler le centre de calibration au besoin 
+
+-- Ajout des ecran dynamique pour afficher les information (Partiellement fait ) 
+
+--  Faire un detection double sens pour si nje passe de negatif a positif il y est un maniere d'aller cherche l'autre valeur 
