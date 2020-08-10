@@ -14,7 +14,8 @@ uint32_t timerOlderMicros = micros();
 unsigned long timerSwitch = millis();
 unsigned long timerAfficherRPM = millis();
 
-#define pinSwitch 13
+
+
 
 double timeEntreMesure; //Temps entre chaque lecture analog rn fonction du Rpm
 
@@ -34,6 +35,7 @@ void setup()
   rpm_init(&Rpm);
   attachInterrupt(digitalPinToInterrupt(pinRPM), blink, FALLING); // changement plus precis dans le falling que rising se type de senseur !
  
+
 
   pinMode(pinSwitch, INPUT_PULLUP);
 
@@ -65,7 +67,7 @@ void loop()
 {
   //Variable
   uint8_t i = 0;
- 
+
   //Calcul RPM
   
   if(millis() - timerAfficherRPM > 500)
@@ -73,6 +75,8 @@ void loop()
     rpm_calcul(&Rpm);
     uptade_display_rpm(RpmDisplay,Rpm.rpm);
     timerAfficherRPM = millis();
+
+
   }
 
   switch (Calibration.etat)
@@ -181,6 +185,8 @@ void loop()
   break;
   case CALCUL_MOYENNE: // calcul de la moyenne
     Serial.println("CALCUL MOYENNE");
+    Serial.print("Valeur ACC # ");
+    Serial.println(AccConfig.testAccNum);
 
     calibration_axe_calcul_moyenne_angle(&CalibrationAxe[AccConfig.testAccNum], NB_TEST);
     calibration_axe_afficher(&CalibrationAxe[AccConfig.testAccNum]);
@@ -195,7 +201,7 @@ void loop()
     }
     else
     {
-      Calibration.etat = INIT;
+      Calibration.etat = AFFICHER;
     }
     
     
@@ -203,14 +209,15 @@ void loop()
   case AFFICHER:
     Serial.println("AFFICHER");
 
-  uptade_display_acc(Acc0Display,00,00);
-  uptade_display_acc(Acc1Display,11,11);
-  uptade_display_acc(Acc2Display,22,22);
-  uptade_display_acc(Acc3Display,33,33);
+  uptade_display_acc(Acc0Display,CalibrationAxe[0].maxMoyen.count,CalibrationAxe[0].minMoyen.count);
+  uptade_display_acc(Acc1Display,CalibrationAxe[1].maxMoyen.count,CalibrationAxe[1].minMoyen.count);
+  uptade_display_acc(Acc2Display,CalibrationAxe[2].maxMoyen.count,CalibrationAxe[2].minMoyen.count);
+  uptade_display_acc(Acc3Display,CalibrationAxe[3].maxMoyen.count,CalibrationAxe[3].minMoyen.count);
   //RPM
   
     // vas gerer le systeme d'affichage future que je ne connait pas encore
     //j'aimerais des 7 segment version geante qui affichye un chiffre en 0 et 12
+    Calibration.etat = INIT;
     break;
   default:
     Calibration.etat = INIT;

@@ -8,7 +8,8 @@
 #include "RPM_NEW.h"
 
 /*Define=======================================================================*/
-
+#define pinSwitch 13
+#define offsetPin A7
 //etat
 enum
 {
@@ -44,6 +45,10 @@ typedef struct
   T_ACC minMoyen; // faire la moyenne
   T_ACC maxMoyen; // faire la moyenne
 
+  int minMoyenOffset; // Appliquer le offset
+  int maxMoyenOffset; // Appliquer le offset
+
+
   //uint8_t poidsMoyenTest[NB_TEST];
   uint8_t numerosTest;
 
@@ -74,7 +79,7 @@ void Calibration_init(T_calibration_axe *calib);
 void algo_peak(int16_t *tableau, int dimension, T_calibration_axe *calibAxe);
 void calibration_axe_afficher(T_calibration_axe *calibAxe);
 void calibration_axe_calcul_moyenne_angle(T_calibration_axe *calibAxe, uint16_t nb_test);
-
+void calibration_applique_offset(T_calibration_axe *calibAxe);
 
 /*====================================Definition====================================*/
 void Calibration_init(T_calibration_axe *calib)
@@ -192,5 +197,39 @@ void calibration_axe_calcul_moyenne_angle(T_calibration_axe *calibAxe, uint16_t 
   calibAxe->angleMoyenMax = calibAxe->maxMoyen.count * (3.6); // 3.6 360/DIMENSION
   calibAxe->angleMoyenMin = calibAxe->minMoyen.count * (3.6); //360/DIMENSION
 
+  calibration_applique_offset(calibAxe);
 
+
+}
+
+void calibration_applique_offset(T_calibration_axe *calibAxe)
+{
+  int offset = 0;
+       //offset  
+    offset = analogRead(offsetPin);
+    offset = map(offset,0,1023,-50,50);
+    /*Serial.print("offset : ");
+    Serial.println(offset);*/
+
+  calibAxe->minMoyenOffset = calibAxe->minMoyen.count + offset;
+  calibAxe->maxMoyenOffset = calibAxe->maxMoyen.count + offset;
+
+  if(calibAxe->minMoyenOffset > 100)
+  {
+    calibAxe->minMoyenOffset -= 100;
+  }
+  else if(calibAxe->minMoyenOffset < 0)
+  {
+    calibAxe->minMoyenOffset += 100;
+  }
+
+
+    if(calibAxe->maxMoyenOffset > 100)
+  {
+    calibAxe->maxMoyenOffset -= 100;
+  }
+  else if(calibAxe->maxMoyenOffset < 0)
+  {
+    calibAxe->maxMoyenOffset += 100;
+  }
 }
